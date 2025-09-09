@@ -1,16 +1,16 @@
 /*
   Deep Sleep with External Wake Up
   =====================================
-  This code displays how to use deep sleep with
-  an external trigger as a wake up source and how
+  This code displays how to use deep sleep with an external trigger as a wake up source and how
   to store data in RTC memory to use it over reboots
 
-  This code is under Public Domain License.
+  HLK-LD2410C (5Vcc) works well as a wake up source from deep sleep, using the OUT pin.
 
   Hardware Connections
   ======================
-  Push Button to GPIO 33 pulled down with a 10K Ohm
-  resistor
+  OUT pin from LD2410C connects to GPIO 33 to test if it can wake up from deepsleep
+  An led is connected to GPIO 14 to indicate wake up and sending data to master USB 
+  LD2410C must have 5V Vcc supply
 
   NOTE:
   ======
@@ -26,6 +26,7 @@
 #define USE_EXT0_WAKEUP          1               // 1 = EXT0 wakeup, 0 = EXT1 wakeup
 #define WAKEUP_GPIO              GPIO_NUM_33     // Only RTC IO are allowed - ESP32 Pin example
 RTC_DATA_ATTR int bootCount = 0;
+const int ledAlarm = 14;
 
 /*
   Method to print the reason by which ESP32
@@ -49,6 +50,7 @@ void print_wakeup_reason() {
 void setup() {
   Serial.begin(115200);
   delay(1000);  //Take some time to open up the Serial Monitor
+  pinMode(ledAlarm, OUTPUT);
 
   //Increment boot number and print it every reboot
   ++bootCount;
@@ -73,7 +75,7 @@ void setup() {
   // EXT0 resides in the same power domain (RTC_PERIPH) as the RTC IO pullup/downs.
   // No need to keep that power domain explicitly, unlike EXT1.
   rtc_gpio_pullup_dis(WAKEUP_GPIO);
-  rtc_gpio_pulldown_en(WAKEUP_GPIO);
+  //rtc_gpio_pulldown_en(WAKEUP_GPIO);
 
 #else  // EXT1 WAKEUP
   //If you were to use ext1, you would use it like
@@ -87,6 +89,10 @@ void setup() {
   rtc_gpio_pulldown_en(WAKEUP_GPIO);  // GPIO33 is tie to GND in order to wake up in HIGH
   rtc_gpio_pullup_dis(WAKEUP_GPIO);   // Disable PULL_UP in order to allow it to wakeup on HIGH
 #endif
+  //
+  // ESP32 has woken up due to AM213 data pin going HIGH
+  sendAlarmToMaster();
+
   //Go to sleep now
   Serial.println("Going to sleep now");
   esp_deep_sleep_start();
@@ -95,4 +101,10 @@ void setup() {
 
 void loop() {
   //This is not going to be called
+}
+// ---------------------------------------------
+void sendAlarmToMaster() {
+  // 4now simply put an LED on for 5s
+  digitalWrite(ledAlarm, HIGH);
+  delay(15000);
 }
