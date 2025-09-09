@@ -1,7 +1,7 @@
 /*
 NEXT VERSION ...
 
-THIS VERSION ...
+THIS VERSION ...  MAU_V1_NOW_Slave_LD2410C.ino
   V1 10Sep25 adding NOW to MASTER ESP32, NO Deepsleep (This is the slave or receiver code, 'The Master ESP32')
   https://randomnerdtutorials.com/esp-now-esp32-arduino-ide/
 
