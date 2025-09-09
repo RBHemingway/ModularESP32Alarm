@@ -1,16 +1,14 @@
 /*
   Deep Sleep with External Wake Up
   =====================================
-  This code displays how to use deep sleep with
-  an external trigger as a wake up source and how
+  This code displays how to use deep sleep with an external trigger as a wake up source and how
   to store data in RTC memory to use it over reboots
 
-  This code is under Public Domain License.
+  AM312 works well as a wake up source from deep sleep
 
   Hardware Connections
   ======================
-  Push Button to GPIO 33 pulled down with a 10K Ohm
-  resistor
+  AM312 has 3v3 Vcc
 
   NOTE:
   ======
